@@ -10,7 +10,56 @@
 	 		  - Execute the SQL query using the pdo function and fetch the result
 	 		  - Return the order info
 	 */
+	function get_customer_and_order_info(PDO $pdo, string $email, string $orderNum) {
+		// SQL query to retrieve customer and order information by joining the orders and customer tables
+		$sql = "SELECT customer.cname, customer.username, 
+				orders.ordernum, orders.quantity, orders.date_ordered, orders.date_deliv
+				FROM orders
+				JOIN customer ON orders.custnum = customer.custnum
+				WHERE orders.ordernum = :orderNum AND customer.email = :email;";
 
+		// Execute the SQL query and fetch the result
+		$order_info = pdo($pdo, $sql, ['orderNum' => $orderNum, 'email' => $email])->fetch();
+
+		// Ensure all expected keys exist to avoid undefined key warnings
+		$order_info_safe = [
+			'name' => isset($order_info['name']) ? $order_info['name'] : '',
+			'username' => isset($order_info['username']) ? $order_info['username'] : '',
+			'ordernum' => isset($order_info['ordernum']) ? $order_info['ordernum'] : '',
+			'quantity' => isset($order_info['quantity']) ? $order_info['quantity'] : '',
+			'date_ordered' => isset($order_info['date_ordered']) ? $order_info['date_ordered'] : '',
+			'date_deliv' => isset($order_info['date_deliv']) ? $order_info['date_deliv'] : ''
+		];
+
+		// Return the order information with safe defaults
+		return $order_info_safe;
+	}
+
+	// Add a corrected function to match the keys expected in the HTML
+	function get_customer_and_order_info_corrected(PDO $pdo, string $email, string $orderNum) {
+		// SQL query to retrieve customer and order information by joining the orders and customer tables
+		$sql = "SELECT customer.cname, customer.username, 
+				orders.ordernum, orders.quantity, orders.date_ordered, orders.date_deliv
+				FROM orders
+				JOIN customer ON orders.custnum = customer.custnum
+				WHERE orders.ordernum = :orderNum AND customer.email = :email;";
+
+		// Execute the SQL query and fetch the result
+		$order_info = pdo($pdo, $sql, ['orderNum' => $orderNum, 'email' => $email])->fetch();
+
+		// Ensure all expected keys exist to avoid undefined key warnings
+		$order_info_safe = [
+			'cname' => isset($order_info['cname']) ? $order_info['cname'] : '',
+			'username' => isset($order_info['username']) ? $order_info['username'] : '',
+			'custnum' => isset($order_info['ordernum']) ? $order_info['ordernum'] : '', // Match HTML's expected key
+			'quantity' => isset($order_info['quantity']) ? $order_info['quantity'] : '',
+			'date_ordered' => isset($order_info['date_ordered']) ? $order_info['date_ordered'] : '',
+			'date_deliv' => isset($order_info['date_deliv']) ? $order_info['date_deliv'] : ''
+		];
+
+		// Return the order information with safe defaults
+		return $order_info_safe;
+	}
 	
 	// Check if the request method is POST (i.e, form submitted)
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -25,7 +74,10 @@
 		/*
 		 * TO-DO: Retrieve info about order from the db using provided PDO connection
 		 */
-		
+		$order_info = get_customer_and_order_info($pdo, $email, $orderNum);
+
+		// Use the corrected function to match the HTML keys
+		$order_info = get_customer_and_order_info_corrected($pdo, $email, $orderNum);
 	}
 // Closing PHP tag  ?> 
 
@@ -89,19 +141,19 @@
 				  -- TO-DO: Check if variable holding order is not empty. Make sure to replace null with your variable!
 				  -->
 				
-				<?php if (!empty(null)): ?>
+				<?php if (!empty($order_info)): ?>
 					<div class="order-details">
 
 						<!-- 
 				  		  -- TO DO: Fill in ALL the placeholders for this order from the db
   						  -->
 						<h1>Order Details</h1>
-						<p><strong>Name: </strong> <?= '' ?></p>
-				        	<p><strong>Username: </strong> <?= '' ?></p>
-				        	<p><strong>Order Number: </strong> <?= '' ?></p>
-				        	<p><strong>Quantity: </strong> <?= '' ?></p>
-				        	<p><strong>Date Ordered: </strong> <?= '' ?></p>
-				        	<p><strong>Delivery Date: </strong> <?= '' ?></p>
+						<p><strong>Name: </strong> <?= htmlspecialchars($order_info['cname']) ?></p>
+				        	<p><strong>Username: </strong> <?= htmlspecialchars($order_info['username']) ?></p>
+				        	<p><strong>Order Number: </strong> <?= htmlspecialchars($order_info['custnum']) ?></p>
+				        	<p><strong>Quantity: </strong> <?= htmlspecialchars($order_info['quantity']) ?></p>
+				        	<p><strong>Date Ordered: </strong> <?= htmlspecialchars($order_info['date_ordered']) ?></p>
+				        	<p><strong>Delivery Date: </strong> <?= htmlspecialchars($order_info['date_deliv']) ?></p>
 				      
 					</div>
 				<?php endif; ?>

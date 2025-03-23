@@ -33,7 +33,12 @@
 	/*
 	 * TO-DO: Retrieve info for ALL remaining toys from the db
 	 */
-
+    function get_all_toys(PDO $pdo) {
+        $sql = "SELECT * FROM toy ORDER BY toynum;";
+        $toys = pdo($pdo, $sql)->fetchAll();
+        return $toys;
+    }
+    $toys = get_all_toys($pdo);
 
 // Closing PHP tag  ?> 
 
@@ -95,84 +100,20 @@
   				<!-- 
 				  -- TO DO: Fill in the rest of the cards for ALL remaining toys from the db
   				  -->
-
-  				<div class="toy-card">
-  					<a href="toy.php?toynum=<?= '' ?>">
-  						<img src="<?= '' ?>" alt="<?= '' ?>">
-  					</a>
-  					<h2><?= '' ?></h2>
-  					<p>$<?= '' ?></p>
-  				</div>
-
-  				<div class="toy-card">
-  					<a href="toy.php?toynum=<?= '' ?>">
-  						<img src="<?= '' ?>" alt="<?= '' ?>">
-  					</a>
-  					<h2><?= '' ?></h2>
-  					<p>$<?= '' ?></p>
-  				</div>
-
-  				<div class="toy-card">
-  					<a href="toy.php?toynum=<?= '' ?>">
-  						<img src="<?= '' ?>" alt="<?= '' ?>">
-  					</a>
-  					<h2><?= '' ?></h2>
-  					<p>$<?= '' ?></p>
-  				</div>
-
-  				<div class="toy-card">
-  					<a href="toy.php?toynum=<?= '' ?>">
-  						<img src="<?= '' ?>" alt="<?= '' ?>">
-  					</a>
-  					<h2><?= '' ?></h2>
-  					<p>$<?= '' ?></p>
-  				</div>
-  				
-  				<div class="toy-card">
-  					<a href="toy.php?toynum=<?= '' ?>">
-  						<img src="<?= '' ?>" alt="<?= '' ?>">
-  					</a>
-  					<h2><?= '' ?></h2>
-  					<p>$<?= '' ?></p>
-  				</div>
-
-  				<div class="toy-card">
-  					<a href="toy.php?toynum=<?= '' ?>">
-  						<img src="<?= '' ?>" alt="<?= '' ?>">
-  					</a>
-  					<h2><?= '' ?></h2>
-  					<p>$<?= '' ?></p>
-  				</div>
-
-  				<div class="toy-card">
-  					<a href="toy.php?toynum=<?= '' ?>">
-  						<img src="<?= '' ?>" alt="<?= '' ?>">
-  					</a>
-  					<h2><?= '' ?></h2>
-  					<p>$<?= '' ?></p>
-  				</div>
-
-  				<div class="toy-card">
-  					<a href="toy.php?toynum=<?= '' ?>">
-  						<img src="<?= '' ?>" alt="<?= '' ?>">
-  					</a>
-  					<h2><?= '' ?></h2>
-  					<p>$<?= '' ?></p>
-  				</div>
-
-  				<div class="toy-card">
-  					<a href="toy.php?toynum=<?= '' ?>">
-  						<img src="<?= '' ?>" alt="<?= '' ?>">
-  					</a>
-  					<h2><?= '' ?></h2>
-  					<p>$<?= '' ?></p>
-  				</div>
+                <?php foreach ($toys as $toy): ?>
+                    <?php if ($toy['toynum'] !== '0001'): ?>  <!-- Skip the first toy since it's already displayed -->
+                        <div class="toy-card">
+                            <a href="toy.php?toynum=<?= htmlspecialchars($toy['toynum']) ?>">
+                                <img src="<?= htmlspecialchars($toy['imgSrc']) ?>" alt="<?= htmlspecialchars($toy['name']) ?>">
+                            </a>
+                            <h2><?= htmlspecialchars($toy['name']) ?></h2>
+                            <p>$<?= htmlspecialchars($toy['price']) ?></p>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
 
   			</section>
   		</main>
 
 	</body>
 </html>
-
-
-
